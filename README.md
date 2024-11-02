@@ -1,4 +1,5 @@
 # HansHuang917.github.io
+以下記錄我怎麼建好這個靜態網站<br>
 建立一個新的Repository<br>
 靜態網站的名稱必須是{Owner}.github.io，因為我已經建立過，所以會出現紅框<br>
 add a readme打勾，然後建立。<br>
