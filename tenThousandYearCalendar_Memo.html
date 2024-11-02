@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perpetual Calendar</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- 引入 Flatpickr 的 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_blue.css">
+
+    <style>
+        .calendar {
+            width: 500px;
+            margin: auto;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .select-container {
+            display: flex; /* 使用 Flexbox 布局 */
+            gap: 10px; /* 可选：设置选择框之间的间距 */
+        }
+
+        #yearSelect {
+            flex: 7; /* 占据 70% 的宽度 */
+        }
+
+        #monthSelect {
+            flex: 3; /* 占据 30% 的宽度 */
+        }
+        .calendar table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .calendar th, .calendar td {
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+        .today {
+            background-color: yellow; /* 高亮当前日期 */
+        }
+        .nav-button {
+            margin: 10px;
+            cursor: pointer;
+        }
+        .sunday {
+            background-color: rgba(236, 22, 22, 0.5); 
+        }
+        .saturday {
+            background-color: rgb(87, 214, 87);
+        }
+        .memolist {
+            width: 600px;
+            margin-top: 20px;
+            /* margin: 5px, 5px;沒作用... */
+            overflow: auto; /* 添加滾動條 */
+            word-wrap: break-word; /* 允許單詞換行 */
+        }
+        #memoList li{
+          cursor: pointer;
+        }
+        .list-group-item:hover {
+            font-size: 26px; /* 將字體大小放大1.5倍或按需求調整 */
+            color: #53de30;
+        }
+
+    /*側邊欄*/
+    html,
+    body {
+      height: 100%;
+    }
+    body {/*DIV橫的排列*/
+      display: flex;
+      flex-direction: row;
+    }
+    .side-menu {
+      width: 300px;
+      height: 100%;
+      padding: 50px 0;
+      position: relative;
+      box-sizing: border-box;
+      background-image: linear-gradient(0deg, #3381b0, #c2196c);
+      display: flex;
+      flex-direction: column;
+      box-shadow: 5px 0px 10px hsla(240, 40%, 15%, .6);
+      transform: translateX(-100%);
+      transition: .3s;
+    }
+
+    .side-menu label {
+      padding: 3px;
+      position: absolute;
+      width: 40px;
+      height: 80px;
+      background-color: #000;
+      color: #fff;
+      right: -40px;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+      line-height: 80px;
+      border-radius: 0 10px 10px 0;
+      cursor: pointer; /* 將游標樣式設置為指針 */
+    }
+
+    .side-menu nav a {
+        /* 添加一些過渡效果，使移動更平滑 */
+        transition: transform 0.3s ease;
+    }
+
+    .side-menu nav a:hover {
+        /* 使用 transform 來向右移動*/
+        transform: translateX(10px);
+    }
+
+    #side-menu-switch {
+      position: absolute;
+      opacity: 0;
+      z-index: -1;
+    }
+
+    #side-menu-switch:checked+.side-menu {
+      transform: translateX(0);
+    }
+
+    #side-menu-switch:checked+.side-menu label .fa{
+      transform: scale(-1);/*這是讓側邊欄的>>>變成<<<，但要搭配css/all.min.css */
+    }
+
+    nav a {
+      display: block;
+      padding: 10px;
+      color: #fff;
+      text-decoration: none;
+      position: relative;
+    }
+
+    nav a .fa {
+      margin-right: -1.1em;
+      transform: scale(0);
+      transition: .3s;
+    }
+
+    nav a:hover .fa {
+      margin-right: 0em;
+      transform: scale(1);
+    }
+
+    nav a+a::before {
+      content: '';
+      position: absolute;
+      border-top: 1px solid rgba(255, 255, 255, .4);
+      left: 10px;
+      right: 10px;
+      top: 0;
+    }
+    </style>
+</head>
+<body>
+    <!-- 側邊欄 -->
+    <input type="checkbox" name="" id="side-menu-switch">
+    <div class="side-menu">
+        <nav>
+            <a href="https://tzcsc.com.tw/" target="_blank">Mon<i class="bi bi-1-square"></i></a>
+            <a href="https://damon624.pixnet.net/blog/post/46864044" target="_blank">Tue<i class="bi bi-2-square"></i></a>
+            <a href="https://tzcsc.com.tw/" target="_blank">Wed<i class="bi bi-3-square"></i></a>
+            <a href="https://damon624.pixnet.net/blog/post/46864044" target="_blank">Thu<i class="bi bi-4-square"></i></a>
+            <a href="https://www.mcdonalds.com/tw/zh-tw.html" target="_blank">Fri<i class="bi bi-5-square"></i></a>
+        </nav>
+        <label for="side-menu-switch">
+            <i class="fa" aria-hidden="true">>>></i>
+        </label>
+    </div>
+    <!-- 側邊欄 DONE -->
+
+    <div class="calendar">
+        <div class="select-container">
+            <select id="yearSelect"  class="form-select"></select>
+            <select id="monthSelect" class="form-select"></select>
+        </div>
+        <div>
+            <button class="nav-button btn btn-primary" onclick="changeYear(-1)" data-bs-toggle="tooltip" title="Down"><<</button>
+            <button class="nav-button btn btn-primary" onclick="changeMonth(-1)" data-bs-toggle="tooltip" title="Left"><</button>
+            <button class="nav-button btn btn-primary" onclick="changeMonth(1)" data-bs-toggle="tooltip" title="Right">></button>
+            <button class="nav-button btn btn-primary" onclick="changeYear(1)" data-bs-toggle="tooltip" title="Up">>></button>
+        </div>
+        <table id="calendarTable">
+            <thead>
+                <tr>
+                    <th class="sunday"><i class="bi bi-sun"></i></th>
+                    <th><i class="bi bi-moon-stars"></i></th>
+                    <th>Tue</th><th>Wed</th>
+                    <th>Thu</th><th>Fri</th>
+                    <th class="saturday">Sat</th>
+                </tr>
+            </thead>
+            <tbody id="calendarBody"></tbody>
+        </table>
+        <div>
+            <label for="datePicker">Select Date to Create memo: </label>
+            <input type="date" id="datePicker" onchange="loadMemo(this.value)">
+        </div>
+        <div>
+            <h3>Memo for <span id="selectedDate"></span></h3>
+            <textarea id="memo" rows="4" cols="50"></textarea>
+        </div>
+        <div class="btn-group">
+            <button onclick="saveMemo()" class="btn btn-primary" data-bs-toggle="tooltip" title="Try to press Insert to save memo">
+              Save Memo
+            </button>
+            <div class="btn-group">
+                <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown">
+                    Delete memo
+                </button>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" href="#" onclick="deleteSelectedMemo()">Selected</a>
+                  <a class="dropdown-item" href="#" onclick="deleteAllMemos()">All</a>
+                </div>
+              </div>
+        </div>
+    </div>
+    <div class="memolist">
+        <h3>Memo List</h3>
+        <ul id="memoList" class="list-group list-group-flush"></ul>
+    </div> 
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+     <!-- 引入 Flatpickr 的 JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="tenThousandYearCalendar.js"></script>
+</body>
+</html>
