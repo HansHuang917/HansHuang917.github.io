@@ -55,9 +55,10 @@
     <button id="btnStart" class="btn btn-primary btn-lg" onclick="startGame()">Start</button>
     <div id="display" class="card">1</div>
     <div>翻牌：<span id="cardNumber" class="card"></span></div>
-    <div class="oneLine win">
-        <button id="btnA" class="hidden">Button A</button><span id="timeA" class="badge bg-info"></span>
-        <button id="btnL" class="hidden">Button L</button><span id="timeL" class="badge bg-success"></span>
+    <div class="oneLine win" style="display: flex;">
+        <button id="btnA" class="btn btn-primary btn-lg">Button A</button><span id="timeA" class="badge bg-info"></span>
+        <span id="timeL" class="badge bg-success"></span>
+        <button id="btnL" class="btn btn-warning btn-lg" style="margin-left: auto;">Button L</button>
     </div>
     <div class="win">
         <span id="playerA">1P</span> wins <span class="badge bg-dark"   id="winA">0</span> time(s)/
@@ -66,7 +67,6 @@
     </div>
     <div id="time">Time: 00:000</div>
     <img id="pic" class="rounded-circle hidden" alt="sprouts">
-
     <script src="js/heartDisease.js"></script>
 </body>
 </html>
